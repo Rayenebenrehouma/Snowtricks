@@ -10,6 +10,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use App\Classe\Mail;
+use App\Entity\AccountActivate;
+use App\Repository\UserRepository;
 
 class RegisterController extends AbstractController
 {
@@ -22,6 +25,7 @@ class RegisterController extends AbstractController
     #[Route('/inscription', name: 'app_register')]
     public function index(Request $request, UserPasswordHasherInterface $hasher): Response
     {
+        $notification = null;
         $user = new User();
         $form = $this->createForm(RegisterType::class, $user);
 
@@ -38,11 +42,65 @@ class RegisterController extends AbstractController
                 //Et on envoie en bdd
                 $this->entityManager->persist($user);
                 $this->entityManager->flush();
+
+                //On crée notre accountactivate pour envoyer notre email avec le token
+                $account_activate = new AccountActivate();
+                $account_activate->setUser($user);
+                $account_activate->setToken(uniqid());
+                $account_activate->setCreatedAt(new \DateTimeImmutable());
+                $this->entityManager->persist($account_activate);
+                $this->entityManager->flush();
+                $token = $account_activate->getToken();
+                $firstname = $user->getFirstname();
+                $mail = new Mail();
+                $content = "Bonjour et bienvenue chez Snowtricks"." Il ne vous reste plus qu'une étape pour profiter pleinement de toutes fonctionnalités de votre compte, n'attendez plus !";
+
+                $mail->send(
+                    "snowtricksprojet@gmail.com",
+                    "Rayen",
+                    "Activation de votre compte Snowtricks",
+                    "Bonjour et bienvenu chez Snowtricks, il ne vous reste plus qu'un étape pour profiter pleinement de toutes les fonctionnalité de votre compte . N'hésitez plus =>",
+                    "$token"
+                );
+
+                $notification = "Votre inscription c'est correctement déroulée. Veuillez activer votre compte ";
+
+                //return $this->redirectToRoute('accueil');
+            }else{
+                $notification = "L'email que vous avez renseigné existe déjà";
             }
+
         }
 
         return $this->render('register/index.html.twig', [
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'notification' => $notification
         ]);
+    }
+
+    #[Route('/verif/{token}', name: 'verif_user')]
+    public function verifyUser(Request $request, $token, UserRepository $userRepository, EntityManagerInterface $entityManager): Response
+    {
+        $account_activate = $this->entityManager->getRepository(AccountActivate::class)->findOneByToken($token);
+
+        //vérifier si le createdAt = now -3h
+        $now = new \DateTimeImmutable();
+        if ($now > $account_activate->getCreatedAt()->modify('+ 3 hour')) {
+            //Faire une notice addFlash();
+            return $this->redirectToRoute('resend_verif');
+        } else {
+            $user_id = ($account_activate->getUser()->getId());
+            $original_account = $this->entityManager->getRepository(User::class)->findOneById($user_id);
+            $original_account->setIsVerified(1);
+            $this->entityManager->flush();
+            return $this->redirectToRoute('accueil');
+        }
+    }
+
+    #[Route('/renvoieverif', name: 'resend_verif')]
+    public function resendVerif(UserRepository $userRepository): Response
+    {
+        $user = $this->getUser();
+        dd($user);
     }
 }
