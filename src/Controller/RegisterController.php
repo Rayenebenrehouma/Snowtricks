@@ -22,7 +22,7 @@ class RegisterController extends AbstractController
         $this->entityManager = $entityManager;
     }
 
-    #[Route('/inscription', name: 'app_register')]
+    #[Route('/inscription', name: 'register')]
     public function index(Request $request, UserPasswordHasherInterface $hasher): Response
     {
         $notification = null;
@@ -86,7 +86,7 @@ class RegisterController extends AbstractController
         //vérifier si le createdAt = now -3h
         $now = new \DateTimeImmutable();
         if ($now > $account_activate->getCreatedAt()->modify('+ 3 hour')) {
-            //Faire une notice addFlash();
+            //Si il expire recréer un token et envoyé un nouvelle email
             return $this->redirectToRoute('resend_verif');
         } else {
             $user_id = ($account_activate->getUser()->getId());
@@ -97,10 +97,18 @@ class RegisterController extends AbstractController
         }
     }
 
-    #[Route('/renvoieverif', name: 'resend_verif')]
+    #[Route('/renvoieverif/{token}', name: 'resend_verif')]
     public function resendVerif(UserRepository $userRepository): Response
     {
         $user = $this->getUser();
-        dd($user);
+        if (!$user) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        if ($user->getIsVerified()) {
+            return $this->redirectToRoute('accueil');
+        }
+
+        return $this->redirectToRoute('accueil');
     }
 }
