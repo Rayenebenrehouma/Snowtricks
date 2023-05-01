@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Snowtricks - Mot de passe oublié{% endblock %}
+
+{% block content %}
+    <form method="post">
+        <h1 class="h3 mb-3 font-weight-normal text-center mb-5 mt-5">Réinitialiser mon mot de passe</h1>
+        <label for="inputEmail">Votre email</label>
+        <input type="email" name="email" id="inputEmail" class="form-control" autocomplete="email" placeholder="Saisir votre email..." required autofocus>
+
+        <button class="btn btn-lg btn-info btn-block mt-3" type="submit">
+            Valider
+        </button>
+        <hr>
+        <p class="text-center">Ou souhaitez-vous <a href="{{ path('app_login') }}">vous connecter</a></p>
+    </form>
+{% endblock %}
