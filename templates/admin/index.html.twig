@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Snowtricks - Administration{% endblock %}
+
+{% block content %}
+
+
+    <style>
+        .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+        .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+    </style>
+
+    <div class="example-wrapper">
+        <h1>Bonjour {{ app.user.firstname }}! ✅</h1>
+
+
+        <table class="table">
+            <thead class="thead-dark">
+            <tr>
+                <th scope="col">Nom de la figure</th>
+                <th scope="col">Description</th>
+                <th scope="col">Groupe de la figure</th>
+                <th scope="col">Image(s)</th>
+                <th scope="col">Vidéo(s)</th>
+                <th scope="col">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                {% for trick in figure %}
+                    <th scope="row">{{ trick.nom }}</th>
+                    <td>{{ trick.description }}</th></td>
+                    <td>{{ trick.groupe }}</th></td>
+                    <td>{{ trick.illustration }}</th></td>
+                    <td>
+                        <iframe width="560" height="315" src="{{ trick.video }}"  frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                        {{ trick.video }}"</th></td>
+                    <td>
+                        <a href="/update-une-figure/{{ trick.id }}">
+                            <button class="btn btn-primary">Modifier</button>
+                        </a>
+                        <button class="btn btn-danger">Supprimer</button>
+                    </th>
+                </td>
+
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
