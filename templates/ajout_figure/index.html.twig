@@ -5,6 +5,12 @@
 {% block content %}
     <h1>Ajout d'une figure</h1>
 
+    {% for message in app.flashes('danger') %}
+        <div class="alert alert-danger">
+            {{ message }}
+        </div>
+    {% endfor %}
+
     {{ form(form) }}
 
 {% endblock %}
