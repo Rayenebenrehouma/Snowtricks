@@ -34,17 +34,27 @@ class AjoutFigureController extends AbstractController
             $video_url = $this->video_cleanURL_YT($video_url);
             $figure->setVideo($video_url);
 
-            $str = $figure->getVideo();
-            $str = explode('&', $str)[0];
-            $figure->setVideo($str);
+            $video_url = $figure->getVideo();
+            $video_url = explode('&', $video_url)[0];
+            $figure->setVideo($video_url);
 
-// $str vaut maintenant "visible"
-            //dd($figure->getVideo());
+            if ($figure->getVideo() == ""){
+                $this->addFlash(
+                    'danger',
+                    'Votre URL Youtube n\'est pas au bon format !'
+                );
+            }else{
+                $this->entityManager->persist($figure);
+                $this->entityManager->flush();
+                $this->addFlash(
+                    'success',
+                    'Votre Tricks a bien été ajouté !'
+                );
+                return $this->redirectToRoute('accueil');
+            }
 
-            $this->entityManager->persist($figure);
-            $this->entityManager->flush();
 
-            return $this->redirectToRoute('accueil');
+
         }
         return $this->render('ajout_figure/index.html.twig', [
             'form' => $form->createView()
@@ -54,8 +64,13 @@ class AjoutFigureController extends AbstractController
     public function video_cleanURL_YT(string $video_url)
     {
         if (!empty($video_url)) {
+            $url_origin = $video_url;
             $video_url = str_replace('youtu.be/', 'www.youtube.com/embed/', $video_url);
             $video_url = str_replace('www.youtube.com/watch?v=', 'www.youtube.com/embed/', $video_url);
+            $str = preg_match('%^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube(-nocookie)?\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|v\/)?)([\w\-]+)(\S+)?$%', $video_url, $matches);
+            if($str == 0){
+                $video_url = "";
+            }
         }
         // -----------------
         return $video_url;
