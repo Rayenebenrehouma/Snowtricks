@@ -30,7 +30,8 @@
                     <th scope="row">{{ trick.nom }}</th>
                     <td>{{ trick.description }}</th></td>
                     <td>{{ trick.groupe }}</th></td>
-                    <td>{{ trick.illustration }}</th></td>
+                    <td>
+                        <img src="{{ asset('assets/image_directory/' ~  trick.illustration ) }}" alt="" width="560" height="315">
                     <td>
                         <iframe width="560" height="315" src="{{ trick.video }}"  frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
                     </th>

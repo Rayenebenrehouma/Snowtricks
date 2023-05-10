@@ -9,6 +9,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\File;
 
 class AjoutFigureType extends AbstractType
 {
@@ -18,7 +19,16 @@ class AjoutFigureType extends AbstractType
             ->add('nom')
             ->add('description')
             ->add('groupe')
-            ->add('illustration', FileType::class)
+            ->add('illustration', FileType::class,[
+                'label' => 'Tricks Image',
+                'mapped' => false,
+                'required' => false,
+                'constraints' => [
+                    new File([
+                        'maxSize' => '1024k',
+                    ])
+                ]
+            ])
             ->add('video')
             ->add('submit', SubmitType::class, [
                 'label' => "Ajouter",
