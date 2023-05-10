@@ -9,6 +9,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use App\Entity\Figure;
 use App\Form\AjoutFigureType;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 class AjoutFigureController extends AbstractController
 {
@@ -19,16 +20,40 @@ class AjoutFigureController extends AbstractController
     }
 
     #[Route('/ajouter-une-figure', name: 'app_ajout_figure')]
-    public function index(Request $request): Response
+    public function index(Request $request, SluggerInterface $slugger): Response
     {
         $figure = new Figure();
         $form = $this->createForm(AjoutFigureType::class, $figure);
-
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $figure = $form->getData();
+            //dd($form->get('illustration')->getData());
+            $imageFile = $form->get('illustration')->getData();
 
+            // this condition is needed because the 'brochure' field is not required
+            // so the PDF file must be processed only when a file is uploaded
+            if ($imageFile) {
+                $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+                //dd($originalFilename);
+                // this is needed to safely include the file name as part of the URL
+                $safeFilename = $slugger->slug($originalFilename);
+                //dd($safeFilename);
+                $newFilename = $safeFilename.'-'.uniqid().'.'.$imageFile->guessExtension();
+                //dd($newFilename);
+                // Move the file to the directory where brochures are stored
+                try {
+                    $imageFile->move(
+                        $this->getParameter('image_directory'),
+                        $newFilename
+                    );
+                } catch (FileException $e) {
+                    // ... handle exception if something happens during file upload
+                }
+                // updates the 'brochureFilename' property to store the PDF file name
+                // instead of its contents
+                $figure->setIllustration($newFilename);
+            }
 
             $video_url = $figure->getVideo();
             $video_url = $this->video_cleanURL_YT($video_url);
