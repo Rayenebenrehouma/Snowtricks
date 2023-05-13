@@ -7,12 +7,11 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\File;
 
-class AjoutFigureType extends AbstractType
+class UpdateFigureFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -44,7 +43,7 @@ class AjoutFigureType extends AbstractType
             ])
             ->add('video')
             ->add('submit', SubmitType::class, [
-                'label' => "Ajouter",
+                'label' => "Mettre à jour",
             ])
         ;
     }
