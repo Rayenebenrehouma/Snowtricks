@@ -1,0 +1,37 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+
+.titre-figure{
+    text-align: center;
+    font-family: 'Poppins', sans-serif;
+}
+
+.figure-card{
+    background-color: red;
+}
+
+.media-figure{
+    background-color: #D7DBDD;
+    border-bottom-left-radius: 20px;
+    border-top-left-radius: 20px;
+    height: 400px;
+}
+
+.espace-blanc{
+    height: 40px;
+}
+
+.figure-media{
+    background-color: #D7DBDD;
+    border-bottom-right-radius: 20px;
+    border-top-right-radius: 20px;
+    height: 400px;
+}
+
+.separation{
+    margin-top: 40px;
+    background: black;
+}
+
+.figure-description{
+    font-size: large;
+}
