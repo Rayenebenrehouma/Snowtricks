@@ -2,14 +2,13 @@
 
 namespace App\Controller;
 
-use App\Classe\Mail;
 use App\Entity\Figure;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class AccueilController extends AbstractController
+class FigureDetailsController extends AbstractController
 {
     private EntityManagerInterface $entityManager;
 
@@ -17,12 +16,12 @@ class AccueilController extends AbstractController
         $this->entityManager = $entityManager;
     }
 
-    #[Route('/', name: 'accueil')]
-
-    public function index(): Response
+    #[Route('/details-figure/{id}', name: 'figure_details')]
+    public function index($id): Response
     {
-        $figure = $this->entityManager->getRepository(Figure::class)->findAll();
-        return $this->render('accueil/index.html.twig',[
+        $figure = $this->entityManager->getRepository(Figure::class)->findOneById($id);
+
+        return $this->render('figure_details/index.html.twig', [
             'figure' => $figure
         ]);
     }

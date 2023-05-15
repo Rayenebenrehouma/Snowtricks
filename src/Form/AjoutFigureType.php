@@ -18,7 +18,7 @@ class AjoutFigureType extends AbstractType
     {
         $builder
             ->add('nom')
-            ->add('description')
+            ->add('description', TextType::class)
             ->add('groupe', ChoiceType::class, [
                 'choices' => [
                     'Grabs' => 'Grabs',
