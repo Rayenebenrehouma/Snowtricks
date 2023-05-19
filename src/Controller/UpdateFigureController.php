@@ -32,6 +32,9 @@ class UpdateFigureController extends AbstractController
 
         if($form->isSubmitted() && $form->isValid()) {
             $figure = $form->getData();
+            $date = new \DateTimeImmutable();
+            $date->format("d/m/Y H:i:s");
+            $figure->setCreatedAt($date);
             //dd($form->get('illustration')->getData());
             $imageFile = $form->get('illustration')->getData();
             $oldImage = $figure->getIllustration();
