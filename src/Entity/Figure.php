@@ -25,8 +25,6 @@ class Figure
     #[ORM\Column(length: 255)]
     private ?string $groupe = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $illustration = null;
 
     #[ORM\Column(length: 255)]
     private ?string $video = null;
@@ -37,14 +35,32 @@ class Figure
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Illustration::class, mappedBy="link", cascade={"persist"})
+     */
+    private Collection $illustrations;
+
+    #[ORM\OneToMany(mappedBy: 'link', targetEntity: Video::class, cascade: ["persist"])]
+    private Collection $videoId;
+
+
     public function __construct()
     {
         $this->commentaires = new ArrayCollection();
+        $this->illustrations = new ArrayCollection();
+        $this->videoId = new ArrayCollection();
     }
 
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function setId(?int $id): self
+    {
+        $this->id = $id;
+
+        return $this;
     }
 
     public function getNom(): ?string
@@ -79,18 +95,6 @@ class Figure
     public function setGroupe(string $groupe): self
     {
         $this->groupe = $groupe;
-
-        return $this;
-    }
-
-    public function getIllustration(): ?string
-    {
-        return $this->illustration;
-    }
-
-    public function setIllustration(string $illustration): self
-    {
-        $this->illustration = $illustration;
 
         return $this;
     }
@@ -145,6 +149,66 @@ class Figure
     public function setCreatedAt(\DateTimeImmutable $createdAt): self
     {
         $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Illustration>
+     */
+    public function getIllustrations(): Collection
+    {
+        return $this->illustrations;
+    }
+
+    public function addIllustration(Illustration $illustration): self
+    {
+        if (!$this->illustrations->contains($illustration)) {
+            $this->illustrations->add($illustration);
+            $illustration->setLink($this);
+        }
+
+        return $this;
+    }
+
+    public function removeIllustration(Illustration $illustration): self
+    {
+        if ($this->illustrations->removeElement($illustration)) {
+            // set the owning side to null (unless already changed)
+            if ($illustration->getLink() === $this) {
+                $illustration->setLink(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Video>
+     */
+    public function getVideoId(): Collection
+    {
+        return $this->videoId;
+    }
+
+    public function addVideoId(Video $videoId): self
+    {
+        if (!$this->videoId->contains($videoId)) {
+            $this->videoId->add($videoId);
+            $videoId->setLink($this);
+        }
+
+        return $this;
+    }
+
+    public function removeVideoId(Video $videoId): self
+    {
+        if ($this->videoId->removeElement($videoId)) {
+            // set the owning side to null (unless already changed)
+            if ($videoId->getLink() === $this) {
+                $videoId->setLink(null);
+            }
+        }
 
         return $this;
     }
