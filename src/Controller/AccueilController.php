@@ -22,6 +22,7 @@ class AccueilController extends AbstractController
     public function index(): Response
     {
         $figure = $this->entityManager->getRepository(Figure::class)->findAll();
+        //dd($figure);
         return $this->render('accueil/index.html.twig',[
             'figure' => $figure
         ]);

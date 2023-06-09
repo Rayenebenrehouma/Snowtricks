@@ -26,28 +26,58 @@
             </thead>
             <tbody>
             <tr>
-                {% for trick in figure %}
-                    <th scope="row">{{ trick.nom }}</th>
-                    <td>{{ trick.description }}</th></td>
-                    <td>{{ trick.groupe }}</th></td>
+                {% for figure in figures %}
+                    <th scope="row">{{ figure.nom }}</th>
+                    <td>{{ figure.description }}</th></td>
+                    <td>{{ figure.groupe }}</th></td>
                     <td>
-                        <img src="{{ asset('assets/image_directory/' ~  trick.illustration ) }}" alt="" width="560" height="315">
-                    <td>
-                        <iframe width="560" height="315" src="{{ trick.video }}"  frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-                    </th>
+                        <div id="carouselImages{{ loop.index }}" class="carousel slide" data-bs-ride="carousel">
+                            <div class="carousel-inner">
+                                {% for illustration in figure.illustrations %}
+                                    <div class="carousel-item {% if loop.first %}active{% endif %}">
+                                        <img src="{{ asset('assets/image_directory/' ~ illustration.imageName) }}" width="200" height="150">
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            <button class="carousel-control-prev" type="button" data-bs-target="#carouselImages{{ loop.index }}" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#carouselImages{{ loop.index }}" data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </button>
+                        </div>
                     </td>
                     <td>
-                        <a href="/update-une-figure/{{ trick.id }}">
+                        <div id="carouselVideo{{ loop.index }}" class="carousel slide" data-bs-ride="carousel">
+                            <div class="carousel-inner">
+                                {% for video in figure.videoId %}
+                                    <div class="carousel-item {% if loop.first %}active{% endif %}">
+                                        <iframe width="500" height="315" src="{{ figure.video }}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            <button class="carousel-control-prev" type="button" data-bs-target="#carouselVideo{{ loop.index }}" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#carouselVideo{{ loop.index }}" data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </button>
+                        </div>
+                    </td>
+                    <td>
+                        <a href="/update-une-figure/{{ figure.id }}">
                             <button class="btn btn-primary">Modifier</button>
                         </a>
-                        <a href="/supprimer-une-figure/{{ trick.id }}">
+                        <a href="/supprimer-une-figure/{{ figure.id }}">
                             <button class="btn btn-danger">Supprimer</button>
                         </a>
-                    </th>
-                </td>
-
+                    </td>
             </tr>
-            {% endfor %}
+                {% endfor %}
             </tbody>
         </table>
     </div>

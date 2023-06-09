@@ -2,7 +2,12 @@
 
 namespace App\Controller;
 
+use App\Entity\Illustration;
+use App\Entity\Video;
 use App\Form\UpdateFigureFormType;
+use App\Repository\IllustrationRepository;
+use App\Repository\ImageRepository;
+use App\Repository\VideoRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
@@ -27,61 +32,67 @@ class UpdateFigureController extends AbstractController
     public function edit(Request $request, SluggerInterface $slugger, $id): Response
     {
         $figure = $this->entityManager->getRepository(Figure::class)->find($id);
+        $oldImage = $this->entityManager->getRepository(Illustration::class)->findByLink($id);
+        $oldVideo = $this->entityManager->getRepository(Video::class)->findByLink($id);
         $form = $this->createForm(UpdateFigureFormType::class, $figure);
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()) {
+
             $figure = $form->getData();
             $date = new \DateTimeImmutable();
             $date->format("d/m/Y H:i:s");
             $figure->setCreatedAt($date);
             //dd($form->get('illustration')->getData());
             $imageFile = $form->get('illustration')->getData();
-            $oldImage = $figure->getIllustration();
 
             // this condition is needed because the 'brochure' field is not required
             // so the PDF file must be processed only when a file is uploaded
             if ($imageFile) {
-                $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
-                //dd($originalFilename);
-                // this is needed to safely include the file name as part of the URL
-                $safeFilename = $slugger->slug($originalFilename);
-                //dd($safeFilename);
-                $newFilename = $safeFilename.'-'.uniqid().'.'.$imageFile->guessExtension();
-                //dd($newFilename);
-                // Move the file to the directory where brochures are stored
-                try {
-                    $path = $this->getParameter('image_directory')."/".$oldImage;
-                    if (!unlink($path)){
-                        echo "You have an error !";
+                foreach ($imageFile as $image) {
+                    $originalFilename = pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME);
+                    //dd($originalFilename);
+                    // this is needed to safely include the file name as part of the URL
+                    $safeFilename = $slugger->slug($originalFilename);
+                    //dd($safeFilename);
+                    $newFilename = $safeFilename . '-' . uniqid() . '.' . $image->guessExtension();
+                    //dd($newFilename);
+                    // Move the file to the directory where brochures are stored
+                    try {
+                        $image->move(
+                            $this->getParameter('image_directory'),
+                            $newFilename
+                        );
+                    } catch (FileException $e) {
+                        // ... handle exception if something happens during file upload
                     }
-                    /* A REVOIR COMMENT CETTE FONCTION MARCHE
-                    $fileSystem = new Filesystem();
-                    $fileSystem->symlink();
-                    $fileSystem->exists('Snowtricks/public/assets/image_directory');
-                    $verify = $fileSystem->remove($this->getParameter('public_directory').'/assets/image_directory/'.$oldImage);
-                    dd($verify);
-                    $fileSystem->remove($oldImage);
-                    */
-                    $imageFile->move(
-                        $this->getParameter('image_directory'),
-                        $newFilename
-                    );
-                } catch (FileException $e) {
-                    // ... handle exception if something happens during file upload
+                    // updates the 'brochureFilename' property to store the PDF file name
+                    // instead of its contents
+                    // Créer une nouvelle instance d'Illustration
+                    $illustration = new Illustration();
+                    $illustration->setImageName($newFilename);
+                    $illustration->setLink($figure);
+                    $illustration->setIsDeleted(false);
+                    $this->entityManager->persist($illustration);
+                    $this->entityManager->flush();
                 }
-                // updates the 'brochureFilename' property to store the PDF file name
-                // instead of its contents
-                $figure->setIllustration($newFilename);
             }
 
             $video_url = $figure->getVideo();
             $video_url = $this->video_cleanURL_YT($video_url);
             $figure->setVideo($video_url);
 
+
             $video_url = $figure->getVideo();
             $video_url = explode('&', $video_url)[0];
-            $figure->setVideo($video_url);
+            $new_video = new Video();
+
+            $new_video->setVideoName($video_url);
+            $new_video->setLink($figure);
+            $new_video->setIsDeleted(0);
+            $this->entityManager->persist($new_video);
+            $this->entityManager->flush();
+            //$figure->setVideo($video_url);
 
             if ($figure->getVideo() == ""){
                 $this->addFlash(
@@ -101,6 +112,8 @@ class UpdateFigureController extends AbstractController
 
         return $this->render('update_figure/index.html.twig', [
             'figure' => $figure,
+            'oldImg' =>$oldImage,
+            'oldVideo' => $oldVideo,
             'form' => $form->createView()
         ]);
     }
@@ -117,5 +130,49 @@ class UpdateFigureController extends AbstractController
         }
         // -----------------
         return $video_url;
+    }
+
+    /**
+     * @Route("/delete-image/{id}", name="delete_image")
+     */
+    public function deleteImage(Request $request, EntityManagerInterface $entityManager, IllustrationRepository $illustrationRepository, $id)
+    {
+        $image = $illustrationRepository->find($id);
+        if (!$image) {
+            throw $this->createNotFoundException('Image not found.');
+        }
+
+        // Supprimer l'image de la base de données
+        $entityManager->remove($image);
+        $entityManager->flush();
+
+        // Supprimer le fichier de votre dossier
+        $path = $this->getParameter('image_directory') . '/' . $image->getImageName();
+        if (!unlink($path)) {
+            dump("An error occurred while deleting the file: " . $path);
+        }
+        // Rediriger vers la page de mise à jour de la figure
+        return $this->redirectToRoute('app_update_figure', ['id' => $image->getLink()->getId()]);
+    }
+
+    /**
+     * @Route("/delete-video/{id}", name="delete_video")
+     */
+    public function deleteVideo(Request $request, EntityManagerInterface $entityManager, VideoRepository $videoRepository, $id)
+    {
+        $video = $videoRepository->find($id);
+        if (!$video) {
+            throw $this->createNotFoundException('Video not found.');
+        }
+
+        // Supprimer la vidéo de la base de données
+        $entityManager->remove($video);
+        $entityManager->flush();
+
+        // Supprimer le fichier de votre dossier (si applicable)
+        // Ajoutez le code ici pour supprimer le fichier de votre dossier
+
+        // Rediriger vers la page de mise à jour de la figure
+        return $this->redirectToRoute('app_update_figure', ['id' => $video->getLink()->getId()]);
     }
 }

@@ -10,6 +10,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\All;
 use Symfony\Component\Validator\Constraints\File;
 
 class UpdateFigureFormType extends AbstractType
@@ -28,18 +29,23 @@ class UpdateFigureFormType extends AbstractType
                     'Slides' => 'Slides'
                 ]
             ])
-            ->add('illustration', FileType::class,[
-                'label' => 'Tricks Image',
+            ->add('illustration', FileType::class, [
+                'label' => 'Tricks Images',
                 'mapped' => false,
                 'required' => false,
+                'multiple' => true,
                 'constraints' => [
-                    new File([
-                        'maxSize' => '1024k',
-                        'mimeTypes' => [
-                            'image/*',
+                    new All([
+                        'constraints' => [
+                            new File([
+                                'maxSize' => '1024k',
+                                'mimeTypes' => [
+                                    'image/*',
+                                ],
+                                'mimeTypesMessage' => 'Les fichiers choisis ne sont pas au bon format (Format accepté jpg, png, jpeg).',
+                            ]),
                         ],
-                        'mimeTypesMessage' => 'Le fichier choisi n\'est pas au bon format (Format accepté jpg, png ,jpeg)',
-                    ])
+                    ]),
                 ],
             ])
             ->add('video')

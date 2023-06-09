@@ -2,6 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\Illustration;
+use App\Entity\Video;
+use App\Form\IllustrationType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Response;
@@ -24,63 +27,87 @@ class AjoutFigureController extends AbstractController
     public function index(Request $request, SluggerInterface $slugger): Response
     {
         $figure = new Figure();
+        $illustration = new Illustration();
         $form = $this->createForm(AjoutFigureType::class, $figure);
         $form->handleRequest($request);
 
+
         if ($form->isSubmitted() && $form->isValid()) {
-            $figure = $form->getData();
-            //dd($form->get('illustration')->getData());
-            $imageFile = $form->get('illustration')->getData();
-
-            // this condition is needed because the 'brochure' field is not required
-            // so the PDF file must be processed only when a file is uploaded
+            $figures = $form->getData();
+            //On récupère les images transmises
+            $imageFile = $form->get('illustrations')->getData();
+            //On boucle si il y en a plusieurs
             if ($imageFile) {
-                $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
-                //dd($originalFilename);
-                // this is needed to safely include the file name as part of the URL
-                $safeFilename = $slugger->slug($originalFilename);
-                //dd($safeFilename);
-                $newFilename = $safeFilename.'-'.uniqid().'.'.$imageFile->guessExtension();
-                //dd($newFilename);
-                // Move the file to the directory where brochures are stored
-                try {
-                    $imageFile->move(
-                        $this->getParameter('image_directory'),
-                        $newFilename
-                    );
-                } catch (FileException $e) {
-                    // ... handle exception if something happens during file upload
-                }
-                // updates the 'brochureFilename' property to store the PDF file name
-                // instead of its contents
-                $figure->setIllustration($newFilename);
-            }
+                foreach ($imageFile as $image) {
+                    //on génère pour chacune un nouveau nom de fichier
+                    $originalFilename = pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME);
+                    //dd($originalFilename);
+                    // this is needed to safely include the file name as part of the URL
+                    $safeFilename = $slugger->slug($originalFilename);
+                    //dd($safeFilename);
+                    $newFilename = $safeFilename.'-'.uniqid().'.'.$image->guessExtension();
+                    //dd($newFilename);
+                    // Move the file to the directory where brochures are stored
+                    try {
+                        $image->move(
+                            $this->getParameter('image_directory'),
+                            $newFilename
+                        );
+                        $illustration = new Illustration();
+                        $illustration->setLink($figure);
+                        $illustration->setImageName($newFilename);
+                        $illustration->setIsDeleted(0);
+                        $figure->addIllustration($illustration);
 
+                        $this->entityManager->persist($illustration);
+                    } catch (FileException $e) {
+                        // ... handle exception if something happens during file upload
+                    }
+                    // updates the 'brochureFilename' property to store the PDF file name
+                    // instead of its contents
+                }
+            }
+            //Instancier la nouvelle video :
+            $video = new Video();
+            //Rendre le lien potable:
             $video_url = $figure->getVideo();
             $video_url = $this->video_cleanURL_YT($video_url);
             $figure->setVideo($video_url);
 
-            $video_url = $figure->getVideo();
             $video_url = explode('&', $video_url)[0];
             $figure->setVideo($video_url);
+            //Lui attribuer les valeurs
+            $video->setLink($figure);
+            $video->setVideoName($video_url);
+            $video->setIsDeleted(0);
+            $figure->addVideoId($video);
+
+
 
             if ($figure->getVideo() == ""){
                 $this->addFlash(
                     'danger',
                     'Votre URL Youtube n\'est pas au bon format !'
                 );
-            }else{
-                $this->entityManager->persist($figure);
-                $this->entityManager->flush();
-                $this->addFlash(
-                    'success',
-                    'Votre Tricks a bien été ajouté !'
-                );
-                return $this->redirectToRoute('accueil');
             }
+            $date = new \DateTimeImmutable();
+            $date->modify("+2 hour");
+            $date->format("d/m/Y H:i:s");
+            $figure->setCreatedAt($date);
+
+
+            $this->entityManager->persist($figure);
+            $this->entityManager->flush();
+            $this->addFlash(
+                'success',
+                'Votre Tricks a bien été ajouté !'
+            );
+            return $this->redirectToRoute('accueil');
         }
+
+
         return $this->render('ajout_figure/index.html.twig', [
-            'form' => $form->createView()
+            'form' => $form->createView(),
         ]);
     }
 
