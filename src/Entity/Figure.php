@@ -36,7 +36,7 @@ class Figure
     private ?\DateTimeImmutable $createdAt = null;
 
     /**
-     * @ORM\OneToMany(targetEntity=Illustration::class, mappedBy="link", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity=Illustration::class, mappedBy="figure", cascade={"persist", "remove"})
      */
     private Collection $illustrations;
 
@@ -164,8 +164,8 @@ class Figure
     public function addIllustration(Illustration $illustration): self
     {
         if (!$this->illustrations->contains($illustration)) {
-            $this->illustrations->add($illustration);
-            $illustration->setLink($this);
+            $this->illustrations[] = $illustration;
+            $illustration->setFigure($this);
         }
 
         return $this;
@@ -174,9 +174,9 @@ class Figure
     public function removeIllustration(Illustration $illustration): self
     {
         if ($this->illustrations->removeElement($illustration)) {
-            // set the owning side to null (unless already changed)
-            if ($illustration->getLink() === $this) {
-                $illustration->setLink(null);
+            // Set the owning side to null (unless already changed)
+            if ($illustration->getFigure() === $this) {
+                $illustration->setFigure(null);
             }
         }
 
