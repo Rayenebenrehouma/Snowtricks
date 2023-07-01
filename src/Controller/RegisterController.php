@@ -40,6 +40,9 @@ class RegisterController extends AbstractController
 
                 $user->setPassword($password);
                 //Et on envoie en bdd
+                $roles = $user->getRoles();
+                $user->setRoles($roles);
+
                 $this->entityManager->persist($user);
                 $this->entityManager->flush();
 
@@ -76,6 +79,7 @@ class RegisterController extends AbstractController
             'form' => $form->createView(),
             'notification' => $notification
         ]);
+        return $this->redirectToRoute('accueil');
     }
 
     #[Route('/verif/{token}', name: 'verif_user')]
