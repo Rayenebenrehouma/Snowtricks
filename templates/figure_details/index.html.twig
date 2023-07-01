@@ -12,11 +12,29 @@
             <h1 class="titre-figure">{{ figure.nom }} - dernière mis à jour le {{ figure.createdat|date('d-m-Y') }}</h1>
     </div>
 <div class="row">
-    <div class="col-md-6 media-figure">
+    <div class="col-md-4 media-figure">
         <div class="espace-blanc"></div>
-        <img src="{{ asset('assets/image_directory/' ~  figure.illustration ) }}" alt="" width="100%" height="315">
+        {% set carouselIndex = 0 %}
+        <div id="carouselImages{{ carouselIndex }}" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                {% for img in illustration.illustrations %}
+                    <div class="carousel-item {% if loop.index == 1 %}active{% endif %}">
+                        <img src="{{ asset('assets/image_directory/' ~ img.imageName) }}" width="400" height="320" class="mb-3">
+                    </div>
+                {% endfor %}
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselImages{{ carouselIndex }}" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselImages{{ carouselIndex }}" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
     </div>
-    <div class="col-md-6 figure-media">
+    <div class="col-md-1 espace-blanc"></div>
+    <div class="col-md-4 figure-media">
         <div class="espace-blanc"></div>
         <iframe width="100%" height="315" src="{{ figure.video }}"  frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
     </div>

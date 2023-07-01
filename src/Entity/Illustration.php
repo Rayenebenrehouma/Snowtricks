@@ -14,7 +14,7 @@ class Illustration
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'illustrations')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(name: 'link', referencedColumnName: 'id', nullable: false)]
     private ?Figure $link = null;
 
     #[ORM\Column(length: 255)]
@@ -63,4 +63,17 @@ class Illustration
 
         return $this;
     }
+
+    public function getFigure(): ?Figure
+    {
+        return $this->figure;
+    }
+
+    public function setFigure(?Figure $figure): self
+    {
+        $this->figure = $figure;
+
+        return $this;
+    }
+
 }

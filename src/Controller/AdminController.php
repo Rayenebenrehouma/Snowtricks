@@ -37,7 +37,6 @@ class AdminController extends AbstractController
                 $figure->addIllustration($illustration);
             }
 
-
             $videos = $this->entityManager->getRepository(Video::class)->findByLink($figure->getId());
             foreach ($videos as $video) {
                 $figure->addVideoId($video);
