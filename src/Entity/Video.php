@@ -13,9 +13,11 @@ class Video
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'videoId')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\ManyToOne(inversedBy: 'videoId', cascade: ["remove"])]
+    #[ORM\JoinColumn(name: 'link_id', referencedColumnName: 'id', nullable: false, onDelete: "CASCADE")]
     private ?Figure $link = null;
+
+
 
     #[ORM\Column(length: 255)]
     private ?string $video_name = null;

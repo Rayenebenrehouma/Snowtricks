@@ -13,6 +13,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use App\Entity\Figure;
 use App\Form\AjoutFigureType;
+use Symfony\Component\Security\Core\Security;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
 class AjoutFigureController extends AbstractController
@@ -33,6 +34,9 @@ class AjoutFigureController extends AbstractController
 
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            $user = $this->getUser();
+
             $figures = $form->getData();
             //On récupère les images transmises
             $imageFile = $form->get('illustrations')->getData();
@@ -94,8 +98,8 @@ class AjoutFigureController extends AbstractController
             $date->modify("+2 hour");
             $date->format("d/m/Y H:i:s");
             $figure->setCreatedAt($date);
+            $figure->setUser($user);
 
-            dd($figure);
             $this->entityManager->persist($figure);
             $this->entityManager->flush();
             $this->addFlash(

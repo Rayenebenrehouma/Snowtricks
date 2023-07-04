@@ -29,7 +29,7 @@ class Figure
     #[ORM\Column(length: 255)]
     private ?string $video = null;
 
-    #[ORM\OneToMany(mappedBy: 'id_figure', targetEntity: Commentaire::class)]
+    #[ORM\OneToMany(mappedBy: 'figure', targetEntity: Commentaire::class, cascade: ["persist"])]
     private Collection $commentaires;
 
     #[ORM\Column]
@@ -42,6 +42,9 @@ class Figure
 
     #[ORM\OneToMany(mappedBy: 'link', targetEntity: Video::class, cascade: ["persist"])]
     private Collection $videoId;
+
+    #[ORM\ManyToOne(inversedBy: 'figures')]
+    private ?User $User = null;
 
 
     public function __construct()
@@ -212,4 +215,17 @@ class Figure
 
         return $this;
     }
+
+    public function getUser(): ?User
+    {
+        return $this->User;
+    }
+
+    public function setUser(?User $User): self
+    {
+        $this->User = $User;
+
+        return $this;
+    }
+
 }
