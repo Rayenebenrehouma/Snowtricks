@@ -23,12 +23,20 @@ class DeleteFigureController extends AbstractController
         $figure = $this->entityManager->getRepository(Figure::class)->find($id);
 
         if ($figure != null){
-            $deleteFigure = $this->entityManager->remove($figure);
-            $this->entityManager->flush();
-            $this->addFlash('danger',
-                'Votre Tricks a bien été supprimer !'
-            );
-            return $this->redirectToRoute('accueil');
+            $user = $this->getUser();
+            $figureUser = $figure->getUser()->getId();
+            if ($user->getRoles() == "ROLE_USER" OR $user->getId() == $figureUser){
+
+                $this->entityManager->remove($figure);
+                $this->entityManager->flush();
+                $this->addFlash('danger',
+                    'Votre Tricks a bien été supprimer !'
+                );
+                return $this->redirectToRoute('accueil');
+
+            }else{
+                return $this->redirectToRoute('404');
+            }
         }else{
             $this->addFlash('danger',
             'Tricks inconnue !'

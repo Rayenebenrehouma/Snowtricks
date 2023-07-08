@@ -3,6 +3,8 @@
 {% block title %}Hello AjoutFigureController!{% endblock %}
 
 {% block content %}
+    {% if 'ROLE_ADMIN' in app.user.roles or app.user.id == figure.user.id %}
+
     <h1>Mettre à jour une figure</h1>
 
     {{ form_start(form) }}
@@ -36,4 +38,7 @@
     {{ form_row(form.submit) }} {# Afficher le bouton "submit" à la fin #}
 
     {{ form_end(form) }}
+    {% else %}
+        <p>Accès restreint. Cette page est réservée aux administrateurs. <a href="/">(retour a l'accueil)</a></p>
+    {% endif %}
 {% endblock %}

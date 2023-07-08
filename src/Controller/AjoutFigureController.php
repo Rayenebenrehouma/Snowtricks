@@ -94,8 +94,8 @@ class AjoutFigureController extends AbstractController
             $date->modify("+2 hour");
             $date->format("d/m/Y H:i:s");
             $figure->setCreatedAt($date);
+            $figure->setUser($this->getUser());
 
-            dd($figure);
             $this->entityManager->persist($figure);
             $this->entityManager->flush();
             $this->addFlash(
