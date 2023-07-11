@@ -26,29 +26,33 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarCollapse">
                 <ul class="navbar-nav me-auto mb-2 mb-md-0">
-                    {% if app.user%}
-                        {% if 'ROLE_ADMIN' in app.user.roles %}
+                    {% if app.user %}
+                        {% if is_granted('ROLE_ADMIN') %}
+                            <!-- L'utilisateur a le rôle d'administrateur -->
                             <li class="nav-item">
                                 <a class="nav-link active" aria-current="page" href="/administration">Administration</a>
                             </li>
+                            <!-- Autres liens pour l'administrateur -->
                         {% else %}
                             <li class="nav-item">
-                                <a class="nav-link active" aria-current="page" href="/ajouter-une-figure">Mes Figures</a>
+                                <a class="nav-link active" aria-current="page" href="/figure-detail/{{ app.user.id }}">Mon Profil</a>
                             </li>
                         {% endif %}
+                        <!-- Autres liens pour tous les utilisateurs connectés -->
                         <li class="nav-item">
                             <a class="nav-link active" aria-current="page" href="/ajouter-une-figure">Ajout</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="/deconnexion">Deconnexion</a>
+                            <a class="nav-link active" aria-current="page" href="/deconnexion">Déconnexion</a>
                         </li>
-                        {% else %}
-                            <li class="nav-item">
-                                <a class="nav-link active" aria-current="page" href="/inscription">Inscription</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link active" aria-current="page" href="/connexion">Se connecter</a>
-                            </li>
+                    {% else %}
+                        <!-- Liens pour les utilisateurs non connectés -->
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="/inscription">Inscription</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="/connexion">Se connecter</a>
+                        </li>
                     {% endif %}
                 </ul>
             </div>
@@ -77,7 +81,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="close"></button>
         <div class="alert-message">
             <strong>Votre compte n'est pas activé</strong>
-            <a href="{{ path('resend_verif') }}">Renvoyer le lien d'activation</a>
+            <a href="{{ path('resend_verif', {'token': 'nouveau-lien-de-verif' }) }}">Renvoyer le lien d'activation</a>
         </div>
 
     </div>

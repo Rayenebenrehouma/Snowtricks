@@ -6,6 +6,7 @@ use App\Entity\Commentaire;
 use App\Entity\Figure;
 use App\Entity\Illustration;
 use App\Entity\User;
+use App\Entity\Video;
 use App\Form\CommentaireType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -27,11 +28,8 @@ class FigureDetailsController extends AbstractController
         $user = $this->getUser();
         $figure = $this->entityManager->getRepository(Figure::class)->findOneById($id);
         $illustrations = $this->entityManager->getRepository(Illustration::class)->findByLink($id);
+        $videos = $this->entityManager->getRepository(Video::class)->findByLink($id);
 
-        $newFigure = new Figure();
-        foreach ($illustrations as $illustration){
-            $newFigure->addIllustration($illustration);
-        }
 
         $commentary_list = $this->entityManager->getRepository(Commentaire::class)->findByFigure($id);
         $commentary = new Commentaire();
@@ -52,12 +50,14 @@ class FigureDetailsController extends AbstractController
             $this->entityManager->flush();
 
 
+
             return $this->redirectToRoute('accueil');
         }
 
         return $this->render('figure_details/index.html.twig', [
             'figure' => $figure,
-            'illustration' => $newFigure,
+            'illustrations' => $illustrations,
+            'videos' => $videos,
             'commentaire' => $commentary_list,
             'form' => $form->createView()
         ]);

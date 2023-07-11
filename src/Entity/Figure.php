@@ -29,7 +29,7 @@ class Figure
     #[ORM\Column(length: 255)]
     private ?string $video = null;
 
-    #[ORM\OneToMany(mappedBy: 'figure', targetEntity: Commentaire::class, cascade: ["persist"])]
+    #[ORM\OneToMany(mappedBy: 'id_figure', targetEntity: Commentaire::class, cascade: ["remove"])]
     private Collection $commentaires;
 
     #[ORM\Column]
@@ -121,6 +121,10 @@ class Figure
     {
         return $this->commentaires;
     }
+
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id')]
+    private ?User $user = null;
 
     public function addCommentaire(Commentaire $commentaire): self
     {
@@ -218,12 +222,12 @@ class Figure
 
     public function getUser(): ?User
     {
-        return $this->User;
+        return $this->user;
     }
 
-    public function setUser(?User $User): self
+    public function setUser(?User $user): self
     {
-        $this->User = $User;
+        $this->user = $user;
 
         return $this;
     }

@@ -17,7 +17,7 @@
         {% set carouselIndex = 0 %}
         <div id="carouselImages{{ carouselIndex }}" class="carousel slide" data-bs-ride="carousel">
             <div class="carousel-inner">
-                {% for img in illustration.illustrations %}
+                {% for img in illustrations %}
                     <div class="carousel-item {% if loop.index == 1 %}active{% endif %}">
                         <img src="{{ asset('assets/image_directory/' ~ img.imageName) }}" width="400" height="320" class="mb-3">
                     </div>
@@ -36,7 +36,23 @@
     <div class="col-md-1 espace-blanc"></div>
     <div class="col-md-4 figure-media">
         <div class="espace-blanc"></div>
-        <iframe width="100%" height="315" src="{{ figure.video }}"  frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        <div id="carouselVideos{{ carouselIndex }}" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                {% for vod in videos %}
+                    <div class="carousel-item {% if loop.index == 1 %}active{% endif %}">
+                        <iframe width="100%" height="315" src="{{ vod.videoName }}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                    </div>
+                {% endfor %}
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselVideos{{ carouselIndex }}" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselVideos{{ carouselIndex }}" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
     </div>
     <div class="col-12">
         <hr class="separation">

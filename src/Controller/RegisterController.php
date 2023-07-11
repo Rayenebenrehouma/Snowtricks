@@ -101,10 +101,35 @@ class RegisterController extends AbstractController
         }
     }
 
-    #[Route('/renvoieverif/{token}', name: 'resend_verif')]
-    public function resendVerif(UserRepository $userRepository): Response
+    #[Route('/renvoie-verif/{token}', name: 'resend_verif')]
+    public function resendVerif(UserRepository $userRepository, $token): Response
     {
         $user = $this->getUser();
+        $token = uniqid();
+
+
+        $account_activate = $this->entityManager->getRepository(AccountActivate::class)->findOneByUser($user);
+        $account_activate->setToken($token);
+        $account_activate->setCreatedAt(new \DateTimeImmutable());
+        $this->entityManager->persist($account_activate);
+        $this->entityManager->flush();
+
+        $token = $account_activate->getToken();
+
+
+        $mail = new Mail();
+        $content = "Bonjour et bienvenue chez Snowtricks"." Il ne vous reste plus qu'une étape pour profiter pleinement de toutes fonctionnalités de votre compte, n'attendez plus !";
+
+        $mail->send(
+            "snowtricksprojet@gmail.com",
+            "Rayen",
+            "Activation de votre compte Snowtricks",
+            "Bonjour et bienvenu chez Snowtricks, il ne vous reste plus qu'un étape pour profiter pleinement de toutes les fonctionnalité de votre compte . N'hésitez plus =>",
+            "$token"
+        );
+
+        $notification = "Votre inscription c'est correctement déroulée. Veuillez activer votre compte ";
+
         if (!$user) {
             return $this->redirectToRoute('app_login');
         }
