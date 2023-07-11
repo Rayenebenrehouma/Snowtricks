@@ -43,6 +43,9 @@ class Figure
     #[ORM\OneToMany(mappedBy: 'link', targetEntity: Video::class, cascade: ["persist"])]
     private Collection $videoId;
 
+    #[ORM\ManyToOne(inversedBy: 'figures')]
+    private ?User $User = null;
+
 
     public function __construct()
     {
