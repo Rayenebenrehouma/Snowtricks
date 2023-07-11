@@ -19,22 +19,21 @@
     {% endfor %}
     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3 card-list">
         {% for trick in figure %}
-            <a href="/details-figure/{{ trick.id }}">
-        <div class="col">
-            <div class="card shadow-sm">
-
-                <div class="card-body">
-                    <p class="card-text">{{ trick.groupe }}</p>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                            <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+            <div class="col">
+                <div class="card shadow-sm">
+                    <a href="/details-figure/{{ trick.id }}">
+                        <img src="{{ asset('/assets/image/stalefish.jpg') }}" class="card-img" alt="">
+                        <div class="card-body">
+                            <p class="card-text d-flex justify-content-center mb-2">{{ trick.groupe }}</p>
+                            <div class="d-flex justify-content-center">
+                                <div class="btn-group">
+                                    <a href="/details-figure/{{ trick.id }}"><button type="button" class="btn btn-sm btn-outline-success">Consulter</button></a>
+                                </div>
+                            </div>
                         </div>
-                    </div>
+                    </a>
                 </div>
             </div>
-        </div>
-            </a>
         {% endfor %}
     </div>
     </main>
