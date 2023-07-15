@@ -19,12 +19,12 @@ class Commentaire
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
 
-    #[ORM\ManyToOne(inversedBy: 'commentaires')]
-    #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]
+    #[ORM\ManyToOne(inversedBy: 'commentaires', cascade: ["remove"])]
+    #[ORM\JoinColumn(name: 'figure_id',referencedColumnName: 'id', nullable: false, onDelete: "CASCADE")]
     private ?figure $figure = null;
 
     #[ORM\ManyToOne(inversedBy: 'commentaires')]
-    #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]
+    #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
     #[ORM\Column(length: 255)]

@@ -25,10 +25,12 @@ class DeleteFigureController extends AbstractController
         if ($figure != null){
             $user = $this->getUser();
             $figureUser = $figure->getUser()->getId();
-            if ($user->getRoles() == "ROLE_USER" OR $user->getId() == $figureUser){
+
+            if ($user->getRoles()[0] == "ROLE_ADMIN" OR $user->getId() == $figureUser){
 
                 $this->entityManager->remove($figure);
                 $this->entityManager->flush();
+
                 $this->addFlash('danger',
                     'Votre Tricks a bien été supprimer !'
                 );

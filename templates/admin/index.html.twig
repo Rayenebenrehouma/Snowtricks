@@ -6,83 +6,31 @@
 
     {% if 'ROLE_ADMIN' in app.user.roles %}
 
-    <style>
-        .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-        .example-wrapper code { background: #F5F5F5; padding: 2px 6px; margin-right: 40px; }
-    </style>
-
-    <div class="example-wrapper">
-        <h1>Bonjour {{ app.user.firstname }}! ✅</h1>
+            <h1>Bonjour {{ app.user.firstname }}! ✅</h1>
 
 
-        <table class="table">
-            <thead class="thead-dark">
-            <tr>
-                <th scope="col">Nom de la figure</th>
-                <th scope="col">Description</th>
-                <th scope="col">Groupe de la figure</th>
-                <th scope="col">Image(s)</th>
-                <th scope="col">Vidéo(s)</th>
-                <th scope="col">Actions</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3 card-list">
                 {% for figure in figures %}
-                    <th scope="row">{{ figure.nom }}</th>
-                    <td>{{ figure.description }}</th></td>
-                    <td>{{ figure.groupe }}</th></td>
-                    <td>
-                        <div id="carouselImages{{ loop.index }}" class="carousel slide" data-bs-ride="carousel">
-                            <div class="carousel-inner">
-                                {% for illustration in figure.illustrations %}
-                                    <div class="carousel-item {% if loop.first %}active{% endif %}">
-                                        <img src="{{ asset('assets/image_directory/' ~ illustration.imageName) }}" width="200" height="150">
+                    <div class="col">
+                        <div class="card shadow-sm">
+                            <a href="/details-figure/{{ figure.id }}">
+                                <img src="{{ asset('/assets/image/stalefish.jpg') }}" class="card-img" alt="">
+                                <div class="card-body">
+                                    <p class="card-text d-flex justify-content-center mb-2">{{ figure.groupe }}</p>
+                                    <div class="d-flex justify-content-center">
+                                        <div class="btn-group">
+                                            <a href="/details-figure/{{ figure.id }}"><button type="button" class="btn btn-sm btn-outline-success">Consulter</button></a>
+                                            <a href="/update-une-figure/{{ figure.id }}"><button type="button" class="btn btn-sm btn-outline-primary">Modifier</button></a>
+                                            <a href="/supprimer-une-figure/{{ figure.id }}"><button type="button" class="btn btn-sm btn-outline-danger">Supprimer</button></a>
+                                        </div>
                                     </div>
-                                {% endfor %}
-                            </div>
-                            <button class="carousel-control-prev" type="button" data-bs-target="#carouselImages{{ loop.index }}" data-bs-slide="prev">
-                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                <span class="visually-hidden">Previous</span>
-                            </button>
-                            <button class="carousel-control-next" type="button" data-bs-target="#carouselImages{{ loop.index }}" data-bs-slide="next">
-                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                <span class="visually-hidden">Next</span>
-                            </button>
+                                </div>
+                            </a>
                         </div>
-                    </td>
-                    <td>
-                        <div id="carouselVideo{{ loop.index }}" class="carousel slide" data-bs-ride="carousel">
-                            <div class="carousel-inner">
-                                {% for video in figure.videoId %}
-                                    <div class="carousel-item {% if loop.first %}active{% endif %}">
-                                        <iframe width="500" height="315" src="{{ figure.video }}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-                                    </div>
-                                {% endfor %}
-                            </div>
-                            <button class="carousel-control-prev" type="button" data-bs-target="#carouselVideo{{ loop.index }}" data-bs-slide="prev">
-                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                <span class="visually-hidden">Previous</span>
-                            </button>
-                            <button class="carousel-control-next" type="button" data-bs-target="#carouselVideo{{ loop.index }}" data-bs-slide="next">
-                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                <span class="visually-hidden">Next</span>
-                            </button>
-                        </div>
-                    </td>
-                    <td>
-                        <a href="/update-une-figure/{{ figure.id }}">
-                            <button class="btn btn-primary">Modifier</button>
-                        </a>
-                        <a href="/supprimer-une-figure/{{ figure.id }}">
-                            <button class="btn btn-danger">Supprimer</button>
-                        </a>
-                    </td>
-            </tr>
+                    </div>
                 {% endfor %}
-            </tbody>
-        </table>
-    </div>
+            </div>
+        </div>
     {% else %}
         <p>Accès restreint. Cette page est réservée aux administrateurs. <a href="/">(retour a l'accueil)</a></p>
     {% endif %}
