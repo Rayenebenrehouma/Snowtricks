@@ -29,7 +29,7 @@ class Figure
     #[ORM\Column(length: 255)]
     private ?string $video = null;
 
-    #[ORM\OneToMany(mappedBy: 'id_figure', targetEntity: Commentaire::class, cascade: ["remove"])]
+    #[ORM\OneToMany(mappedBy: 'figure', targetEntity: Commentaire::class, cascade: ["remove"])]
     private Collection $commentaires;
 
     #[ORM\Column]
