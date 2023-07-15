@@ -17,6 +17,8 @@ class Video
     #[ORM\JoinColumn(name: 'link_id', referencedColumnName: 'id', nullable: false, onDelete: "CASCADE")]
     private ?Figure $link = null;
 
+
+
     #[ORM\Column(length: 255)]
     private ?string $video_name = null;
 
