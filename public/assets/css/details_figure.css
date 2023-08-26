@@ -1,0 +1,99 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+
+.titre-figure{
+    text-align: center;
+    font-family: 'Poppins', sans-serif;
+    font-size: medium;
+}
+
+.figure-card{
+    background-color: red;
+}
+
+.media-figure{
+    background-color: #D7DBDD;
+    border-radius: 20px;
+    height: 400px;
+    margin-left: 150px;
+}
+
+.media-figure img{
+    max-height: 100%;
+    max-width: 100%;
+}
+
+.espace-blanc{
+    height: 40px;
+}
+
+.figure-media{
+    background-color: #D7DBDD;
+    border-radius: 20px;
+    height: 400px;
+}
+
+.separation{
+    margin-top: 40px;
+    background: black;
+}
+
+.commentary-description{
+    background-color: white;
+    border-radius: 20px;
+    padding: 50px;
+}
+
+.figure-description{
+    font-size: large;
+}
+
+.test{
+    color: red;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.commentary-form{
+    background-color: white;
+    padding: 50px;
+    border-radius: 20px;
+    margin-top: 20px;
+}
+
+.commentary-form button {
+margin-left: 45%;
+}
+
+.commentary-form label {
+    display: flex;
+    justify-content: center;
+}
+
+.commentary-form p{
+    display: flex;
+    justify-content: center;
+}
+
+.commentary-list{
+    background-color: white;
+    border-radius: 20px;
+    padding: 50px;
+    margin-top: 20px;
+}
+
+.commentary-list h2{
+    font-family: 'Poppins', sans-serif;
+    font-size: small;
+    text-decoration: underline red;
+    margin-bottom: 40px;
+}
+
+.commentary-list h3{
+    font-size: medium;
+    font-family: 'Poppins', sans-serif;
+}
+
+hr{
+    color: red;
+}

@@ -1,0 +1,84 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello FigureDetailsController!{% endblock %}
+
+{% block content %}
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+</style>
+
+    <div class="example-wrapper">
+            <h1 class="titre-figure">{{ figure.nom }} - dernière mis à jour le {{ figure.createdat|date('d-m-Y') }}</h1>
+    </div>
+<div class="row">
+    <div class="col-md-4 media-figure">
+        <div class="espace-blanc"></div>
+        {% set carouselIndex = 0 %}
+        <div id="carouselImages{{ carouselIndex }}" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                {% for img in illustrations %}
+                    <div class="carousel-item {% if loop.index == 1 %}active{% endif %}">
+                        <img src="{{ asset('assets/image_directory/' ~ img.imageName) }}" width="400" height="320" class="mb-3">
+                    </div>
+                {% endfor %}
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselImages{{ carouselIndex }}" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselImages{{ carouselIndex }}" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+    </div>
+    <div class="col-md-1 espace-blanc"></div>
+    <div class="col-md-4 figure-media">
+        <div class="espace-blanc"></div>
+        <div id="carouselVideos{{ carouselIndex }}" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                {% for vod in videos %}
+                    <div class="carousel-item {% if loop.index == 1 %}active{% endif %}">
+                        <iframe width="100%" height="315" src="{{ vod.videoName }}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                    </div>
+                {% endfor %}
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselVideos{{ carouselIndex }}" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselVideos{{ carouselIndex }}" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+    </div>
+    <div class="col-12">
+        <hr class="separation">
+    </div>
+    <div class="col-12 commentary-description">
+        <h2 class="figure-description">Description</h2>
+        <p>{{ figure.description }}</p>
+    </div>
+    {% if app.user%}
+    <div class="col-12 commentary-form">
+        {{ form(form) }}
+    </div>
+    {% else %}
+        <div class="col-12 commentary-form">
+            <p>Inscrivez-vous ou connectez-vous pour laissez un commentaire !</p>
+        </div>
+    {% endif %}
+    <div class="col-12 commentary-list">
+        <h2>Commentaire</h2>
+        <ul>
+        {% for commentary in commentaire %}
+            <h3>Ajouté par {{ commentary.commentairefirstname }} le {{ commentary.createdat|date('d-m-Y') }}</h3>
+            <li>{{ commentary.content }}</li>
+            <hr>
+        {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock %}

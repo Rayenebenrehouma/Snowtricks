@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello AjoutFigureController!{% endblock %}
+
+{% block content %}
+    {% if 'ROLE_ADMIN' in app.user.roles or app.user.id == figure.user.id %}
+
+    <h1>Mettre à jour une figure</h1>
+
+    {{ form_start(form) }}
+
+    {% for field in form %}
+        {% if field.vars.name != 'submit' %}
+            {{ form_row(field) }}
+        {% endif %}
+    {% endfor %}
+
+    <div class="row">
+        {% for illustration in oldImg %}
+            <div class="col-md-3">
+                <img src="{{ asset('assets/image_directory/' ~ illustration.imageName) }}" width="200" height="150" class="mb-3">
+                <a href="{{ path('delete_image', { 'id': illustration.id }) }}" class="btn btn-danger">Supprimer</a>
+            </div>
+        {% endfor %}
+    </div>
+    <hr>
+    <div class="row">
+        {% for video in oldVideo %}
+            <div class="col-md-6">
+                <iframe width="560" height="315" src="{{ video.videoName }}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                <div class="text-center">
+                    <a href="{{ path('delete_video', { 'id': video.id }) }}" class="btn btn-danger mb-2">Supprimer</a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    {{ form_row(form.submit) }} {# Afficher le bouton "submit" à la fin #}
+
+    {{ form_end(form) }}
+    {% else %}
+        <p>Accès restreint. Cette page est réservée aux administrateurs. <a href="/">(retour a l'accueil)</a></p>
+    {% endif %}
+{% endblock %}

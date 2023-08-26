@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Snowtricks - Administration{% endblock %}
+
+{% block content %}
+
+    {% if 'ROLE_ADMIN' in app.user.roles %}
+
+            <h1>Bonjour {{ app.user.firstname }}! ✅</h1>
+
+
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3 card-list">
+                {% for figure in figures %}
+                    <div class="col">
+                        <div class="card shadow-sm">
+                            <a href="/details-figure/{{ figure.id }}">
+                                <img src="{{ asset('/assets/image/stalefish.jpg') }}" class="card-img" alt="">
+                                <div class="card-body">
+                                    <p class="card-text d-flex justify-content-center mb-2">{{ figure.groupe }}</p>
+                                    <div class="d-flex justify-content-center">
+                                        <div class="btn-group">
+                                            <a href="/details-figure/{{ figure.id }}"><button type="button" class="btn btn-sm btn-outline-success">Consulter</button></a>
+                                            <a href="/update-une-figure/{{ figure.id }}"><button type="button" class="btn btn-sm btn-outline-primary">Modifier</button></a>
+                                            <a href="/supprimer-une-figure/{{ figure.id }}"><button type="button" class="btn btn-sm btn-outline-danger">Supprimer</button></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% else %}
+        <p>Accès restreint. Cette page est réservée aux administrateurs. <a href="/">(retour a l'accueil)</a></p>
+    {% endif %}
+{% endblock %}

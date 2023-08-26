@@ -1,6 +1,15 @@
 {
+    "doctrine/annotations": {
+        "version": "2.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "1.10",
+            "ref": "64d8583af5ea57b7afa4aba4b159907f3a148b05"
+        }
+    },
     "doctrine/doctrine-bundle": {
-        "version": "2.10",
+        "version": "2.9",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "main",
@@ -31,13 +40,25 @@
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "main",
-            "version": "9.6",
-            "ref": "7364a21d87e658eb363c5020c072ecfdc12e2326"
+            "version": "9.3",
+            "ref": "a6249a6c4392e9169b87abf93225f7f9f59025e6"
         },
         "files": [
             "./.env.test",
             "./phpunit.xml.dist",
             "./tests/bootstrap.php"
+        ]
+    },
+    "sensio/framework-extra-bundle": {
+        "version": "6.2",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "5.2",
+            "ref": "fb7e19da7f013d0d422fa9bce16f5c510e27609b"
+        },
+        "files": [
+            "./config/packages/sensio_framework_extra.yaml"
         ]
     },
     "symfony/console": {
@@ -65,7 +86,7 @@
         ]
     },
     "symfony/flex": {
-        "version": "2.3",
+        "version": "2.2",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "main",
@@ -108,7 +129,7 @@
         ]
     },
     "symfony/maker-bundle": {
-        "version": "1.50",
+        "version": "1.48",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "main",
@@ -146,19 +167,19 @@
             "repo": "github.com/symfony/recipes",
             "branch": "main",
             "version": "5.0",
-            "ref": "178877daf79d2dbd62129dd03612cb1a2cb407cc"
+            "ref": "c31585e252b32fe0e1f30b1f256af553f4a06eb9"
         },
         "files": [
             "./config/packages/notifier.yaml"
         ]
     },
     "symfony/phpunit-bridge": {
-        "version": "6.3",
+        "version": "6.2",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "main",
-            "version": "6.3",
-            "ref": "01dfaa98c58f7a7b5a9b30e6edb7074af7ed9819"
+            "version": "5.3",
+            "ref": "819d3d2ffa4590eba0b8f4f3e5e89415ee4e45c3"
         },
         "files": [
             "./.env.test",
@@ -244,7 +265,7 @@
         ]
     },
     "symfony/webapp-pack": {
-        "version": "1.2",
+        "version": "1.1",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "main",
@@ -256,6 +277,6 @@
         ]
     },
     "twig/extra-bundle": {
-        "version": "v3.7.0"
+        "version": "v3.5.1"
     }
 }

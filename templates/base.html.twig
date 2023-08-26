@@ -1,19 +1,108 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
-        {# Run `composer require symfony/webpack-encore-bundle` to start using Symfony UX #}
-        {% block stylesheets %}
-            {{ encore_entry_link_tags('app') }}
-        {% endblock %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Hugo 0.104.2">
+    <title>{% block title %}Snowtricks - Partagez votre passion{% endblock %}</title>
 
-        {% block javascripts %}
-            {{ encore_entry_script_tags('app') }}
+
+    <link rel="stylesheet" href="{{ asset('assets/css/homie.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/details_figure.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/carourou.css') }}">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.0.2/css/bootstrap.min.css">
+
+</head>
+<body>
+<header>
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/"><img id="nav-logo" src="{{ asset('assets/image/snowtricks-logo.png') }}" alt=""></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <ul class="navbar-nav me-auto mb-2 mb-md-0">
+                    {% if app.user %}
+                        {% if is_granted('ROLE_ADMIN') %}
+                            <!-- L'utilisateur a le rôle d'administrateur -->
+                            <li class="nav-item">
+                                <a class="nav-link active" aria-current="page" href="/administration">Administration</a>
+                            </li>
+                            <!-- Autres liens pour l'administrateur -->
+                        {% else %}
+                            <li class="nav-item">
+                                <a class="nav-link active" aria-current="page" href="/figure-detail/{{ app.user.id }}">Mon Profil</a>
+                            </li>
+                        {% endif %}
+                        <!-- Autres liens pour tous les utilisateurs connectés -->
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="/ajouter-une-figure">Ajout</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="/deconnexion">Déconnexion</a>
+                        </li>
+                    {% else %}
+                        <!-- Liens pour les utilisateurs non connectés -->
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="/inscription">Inscription</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="/connexion">Se connecter</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+{% if block('banner') is defined %}
+    <main>
+        <section class="py-5 text-center container">
+            <div class="row py-lg-5">
+                <div class="col-lg-6 col-md-8 mx-auto">
+                    <img src="{{ asset('assets/image/snowboard-joe.jpg') }}" alt="" width="100%" height="100%">
+                </div>
+            </div>
+        </section>
+    </main>
+{% endif %}
+<div class="album py-5 bg-light {%  if block('banner') is not defined %}mt-5{% endif %}">
+    <div class="container">
+        {% block content %}
         {% endblock %}
-    </head>
-    <body>
-        {% block body %}{% endblock %}
-    </body>
+    </div>
+</div>
+{% if app.user and app.user.isVerified == false %}
+    <div class="alert alert-warning alert-dismissible" role="alert">
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="close"></button>
+        <div class="alert-message">
+            <strong>Votre compte n'est pas activé</strong>
+            <a href="{{ path('resend_verif', {'token': 'nouveau-lien-de-verif' }) }}">Renvoyer le lien d'activation</a>
+        </div>
+
+    </div>
+{% endif %}
+<footer class="text-muted py-5">
+    <div class="container">
+        <p class="float-end mb-1">
+            <a href="#">Back to top</a>
+        </p>
+        <p class="mb-1">Album example is &copy; Bootstrap, but please download and customize it for yourself!</p>
+        <p class="mb-0">New to Bootstrap? <a href="/">Visit the homepage</a> or read our <a href="../getting-started/introduction/">getting started guide</a>.</p>
+    </div>
+</footer>
+
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.0.2/js/bootstrap.min.js"></script>
+<script src="{{ asset('assets/js/bootstrap.bundle.js') }}"></script>
+
+
+</body>
 </html>

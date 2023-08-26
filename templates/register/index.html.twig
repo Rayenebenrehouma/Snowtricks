@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Snowtricks - Incription{% endblock %}
+
+{% block content %}
+    <h1 class="text-center mt-5 mb-5">Inscription</h1>
+
+    {% if notification %}
+        <div class="alert alert-info">
+            {{ notification }}
+        </div>
+        <hr>
+    {% endif %}
+    {{ form(form) }}
+
+
+{% endblock %}
